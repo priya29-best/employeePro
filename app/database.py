@@ -2,19 +2,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app/employee.db")
 
-# Render DATABASE_URL dega, nahi to local sqlite use hoga
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
-
-# Render postgres:// deta hai, sqlalchemy ko postgresql:// chahiye
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-engine = create_engine(DATABASE_URL)
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base()
+# sqlite ke liye extra param chahiye
+connect_args = {}
+if "sqlite" in DATABASE_URL:
+    connect_args = {"check_same_thread": False}
 
-engine = create_engine("sqlite:///./app/employee.db", connect_args={"check_same_thread": False})
+engine = create_engine(DATABASE_URL, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
