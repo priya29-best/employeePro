@@ -5,9 +5,10 @@ import os
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app/employee.db")
 
 if DATABASE_URL.startswith("postgres://"):
-    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql+psycopg2://", 1)
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace("postgresql://", "postgresql+psycopg2://", 1)
 
-# sqlite ke liye extra param chahiye
 connect_args = {}
 if "sqlite" in DATABASE_URL:
     connect_args = {"check_same_thread": False}
